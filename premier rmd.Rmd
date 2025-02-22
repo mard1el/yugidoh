@@ -1,0 +1,55 @@
+---
+title: "projet yu gi oh"
+author: "bullyman"
+date: "2025-02-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(jsonlite)
+```
+
+
+```{r pressure, echo=FALSE}
+
+#nouvel essai
+folder_path <- "yugioh-card-history-main/yugioh-card-history-main/fr/"
+json_files <- list.files(folder_path, pattern = "\\.json$", full.names = TRUE)
+
+# Lis et stocke chaque fichier JSON dans une liste de dataframes
+data_list <- lapply(json_files, function(file) {
+  tryCatch({
+    fromJSON(file, flatten = TRUE) %>% as.data.frame()
+  }, error = function(e) {
+    message(paste("Erreur en lisant", file, ":", e))
+    NULL
+  })
+})
+
+# Fusionne tous les dataframes tout en alignant les colonnes et remplissant les manquants par NA
+final_df <- bind_rows(data_list)
+
+# Vérifie le résultat
+print(head(final_df))
+
+```
+
+```{r}
+#Manipuler le tableau
+#retirer la colone id
+#retirer la colonne notes 
+#retirer la colonne properties
+# supprimer les cases en doubles 
+#supprimer les doublons
+#séparer les cartes en type de cartes
+copie = final_df
+colnames(final_df)
+copietaff <- subset(copie, select = -c(id, notes, properties))
+copietaff <- distinct(copietaff)
+spellcard <- subset(copietaff,type=="spell")
+trapcard <- subset(copietaff,type=="trap")
+monstercard <- subset(copietaff,type=="monster")
+
+```
+
